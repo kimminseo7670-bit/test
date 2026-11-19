@@ -3,31 +3,68 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
     <title>Camera Project</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <!-- 사진 업로드 -->
-    <input type="file" id="imageInput" accept="image/*">
-    <button id="uploadButton">사진 업로드</button>
+    <h3>사진 업로드</h3>
 
-    <!-- 업로드된 사진 -->
-    <img id="uploadedImage" alt="업로드된 사진">
+    <input
+        type="file"
+        id="imageInput"
+        accept="image/*"
+    >
 
-    <!-- 카메라 영상 미리보기 -->
-    <video id="cameraPreview" autoplay muted playsinline></video>
+    <button id="uploadButton">
+        사진 업로드
+    </button>
 
-    <!-- 촬영 버튼 -->
-    <div id="cameraControls">
-        <button id="startButton">촬영</button>
-        <button id="stopButton" disabled>중지</button>
+    <div id="imageContainer">
+        <img id="uploadedImage" alt="업로드한 사진">
     </div>
 
-    <!-- 촬영 영상 다운로드 -->
-    <a id="downloadLink" hidden>영상 다운로드</a>
+    <h3>영상 촬영</h3>
+
+    <div id="cameraControls">
+
+        <button id="startButton">
+            촬영
+        </button>
+
+        <button id="stopButton" disabled>
+            중지
+        </button>
+
+    </div>
+
+    <p id="status">촬영 대기 중</p>
+
+    <h3>촬영한 영상 가져오기</h3>
+
+    <input
+        type="file"
+        id="videoInput"
+        accept="video/*"
+    >
+
+    <video
+        id="recordedVideo"
+        controls
+        playsinline
+        hidden
+    ></video>
+
+    <a id="downloadLink" hidden>
+        영상 다운로드
+    </a>
 
     <script src="script.js"></script>
+
 </body>
 </html>
