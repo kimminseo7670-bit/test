@@ -1,21 +1,22 @@
 
 body {
     margin: 0;
-    padding: 0;
+    padding: 10px;
 }
 
-#imageInput {
+#imageInput,
+#videoInput {
     display: none;
+}
+
+#imageContainer {
+    width: 100%;
 }
 
 #uploadedImage {
     display: none;
     width: 100%;
     height: auto;
-}
-
-#cameraPreview {
-    display: none;
 }
 
 #cameraControls {
@@ -27,11 +28,15 @@ body {
 }
 
 #cameraControls button {
-    padding: 8px;
+    padding: 8px 12px;
+}
+
+#recordedVideo {
+    width: 100%;
+    margin-top: 10px;
 }
 
 #downloadLink {
-    position: fixed;
-    left: 10px;
-    bottom: 10px;
+    display: block;
+    margin-top: 10px;
 }
