@@ -36,28 +36,37 @@ imageInput.addEventListener("change", () => {
 });
 
 // 아이폰 후면 카메라 실행
-startButton.addEventListener("click", () => {
 
-    const input = document.createElement("input");
+startButton.addEventListener("click", async () => {
+    try {
+        status.textContent = "카메라 실행 준비 중...";
 
-    input.type = "file";
-    input.accept = "video/*";
-    input.setAttribute("capture", "environment");
+        const input = document.createElement("input");
 
-    input.addEventListener("change", () => {
-        const file = input.files[0];
+        input.type = "file";
+        input.accept = "video/*";
+        input.setAttribute("capture", "environment");
 
-        if (!file) {
-            status.textContent = "촬영이 취소되었습니다.";
-            return;
-        }
+        input.addEventListener("change", () => {
+            const file = input.files && input.files[0];
 
-        displayVideo(file);
-    });
+            if (!file) {
+                status.textContent = "촬영이 취소되었습니다.";
+                return;
+            }
 
-    input.click();
+            displayVideo(file);
+        }, { once: true });
 
+        input.click();
+
+        status.textContent = "카메라 또는 영상 선택 화면을 기다리는 중...";
+
+    } catch (error) {
+        status.textContent = "오류: " + error.message;
+    }
 });
+
 
 // 촬영 중지 버튼
 stopButton.addEventListener("click", () => {
