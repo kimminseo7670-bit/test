@@ -3,90 +3,98 @@ const imageInput = document.getElementById("imageInput");
 const uploadButton = document.getElementById("uploadButton");
 const uploadedImage = document.getElementById("uploadedImage");
 
-const cameraPreview = document.getElementById("cameraPreview");
 const startButton = document.getElementById("startButton");
 const stopButton = document.getElementById("stopButton");
+
+const videoInput = document.getElementById("videoInput");
+const recordedVideo = document.getElementById("recordedVideo");
 const downloadLink = document.getElementById("downloadLink");
 
-let cameraStream = null;
-let mediaRecorder = null;
-let recordedChunks = [];
+const status = document.getElementById("status");
 
-// 사진 업로드 버튼
+let imageURL = null;
+let videoURL = null;
+
+// 사진 업로드
 uploadButton.addEventListener("click", () => {
     imageInput.click();
 });
 
-// 사진 선택
 imageInput.addEventListener("change", () => {
     const file = imageInput.files[0];
 
     if (!file) return;
 
-    const imageURL = URL.createObjectURL(file);
+    if (imageURL) {
+        URL.revokeObjectURL(imageURL);
+    }
+
+    imageURL = URL.createObjectURL(file);
 
     uploadedImage.src = imageURL;
     uploadedImage.style.display = "block";
 });
 
-// 촬영 시작
-startButton.addEventListener("click", async () => {
-    try {
-        if (!navigator.mediaDevices?.getUserMedia) {
-            alert("이 브라우저에서는 카메라를 사용할 수 없습니다.");
+// 아이폰 후면 카메라 실행
+startButton.addEventListener("click", () => {
+
+    const input = document.createElement("input");
+
+    input.type = "file";
+    input.accept = "video/*";
+    input.setAttribute("capture", "environment");
+
+    input.addEventListener("change", () => {
+        const file = input.files[0];
+
+        if (!file) {
+            status.textContent = "촬영이 취소되었습니다.";
             return;
         }
 
-        cameraStream = await navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: true
-        });
+        displayVideo(file);
+    });
 
-        cameraPreview.srcObject = cameraStream;
+    input.click();
 
-        recordedChunks = [];
-
-        mediaRecorder = new MediaRecorder(cameraStream);
-
-        mediaRecorder.ondataavailable = (event) => {
-            if (event.data.size > 0) {
-                recordedChunks.push(event.data);
-            }
-        };
-
-        mediaRecorder.onstop = () => {
-            const videoBlob = new Blob(recordedChunks, {
-                type: mediaRecorder.mimeType
-            });
-
-            const videoURL = URL.createObjectURL(videoBlob);
-
-            downloadLink.href = videoURL;
-            downloadLink.download = "recording.webm";
-            downloadLink.hidden = false;
-            downloadLink.textContent = "영상 다운로드";
-
-            cameraStream.getTracks().forEach(track => track.stop());
-            cameraStream = null;
-            cameraPreview.srcObject = null;
-        };
-
-        mediaRecorder.start();
-
-        startButton.disabled = true;
-        stopButton.disabled = false;
-
-    } catch (error) {
-        alert("카메라를 실행할 수 없습니다: " + error.message);
-    }
 });
 
-// 촬영 중지
+// 촬영 중지 버튼
 stopButton.addEventListener("click", () => {
-    if (mediaRecorder && mediaRecorder.state !== "inactive") {
-        mediaRecorder.stop();
-    }
+    status.textContent =
+        "기본 카메라 앱에서 촬영을 종료해 주세요.";
 
     startButton.disabled = false;
     stopButton.disabled = true;
 });
+
+// 영상 파일 가져오기
+videoInput.addEventListener("change", () => {
+    const file = videoInput.files[0];
+
+    if (!file) return;
+
+    displayVideo(file);
+});
+
+// 영상 표시 및 다운로드
+function displayVideo(file) {
+
+    if (videoURL) {
+        URL.revokeObjectURL(videoURL);
+    }
+
+    videoURL = URL.createObjectURL(file);
+
+    recordedVideo.src = videoURL;
+    recordedVideo.hidden = false;
+
+    downloadLink.href = videoURL;
+    downloadLink.download = "recording.mov";
+    downloadLink.hidden = false;
+
+    status.textContent = "영상이 등록되었습니다.";
+
+    startButton.disabled = false;
+    stopButton.disabled = true;
+}
